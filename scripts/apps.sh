@@ -90,6 +90,10 @@ EOF
     sudo apt install chafa -y
     sudo apt install ripgrep -y
 
+# Opencode
+    curl -fsSL https://opencode.ai/install | bash
+    wait
+    
 # VSCode
     wget "https://vscode.download.prss.microsoft.com/dbazure/download/stable/e170252f762678dec6ca2cc69aba1570769a5d39/code_1.88.1-1712771838_amd64.deb"
     wait
