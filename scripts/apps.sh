@@ -50,7 +50,7 @@ flatpak update
 # Install yazi
     # Ensure new cargo environment for this shell
         source "$HOME/.cargo/env"
-    cargo install --force --git https://github.com/sxyazi/yazi.git yazi-build
+    cargo install --force --git https://github.com/sxyazi/yazi.git yazi-build yazi-cli
 # Install plugins
     ya pkg add dedukun/bookmarks
     ya pkg add yazi-rs/plugins:mount
