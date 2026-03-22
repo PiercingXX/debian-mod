@@ -58,9 +58,19 @@ function menu() {
         "Install"                               "Install PiercingXX Debian" \
         "Nvidia Driver"                         "Install Nvidia Drivers (Do not install on a Surface Device)" \
         "Optional Surface Kernel"               "Microsoft Surface Kernel" \
-        "Hyprland"                              "Install Hyprland & All Dependencies" \
+        "Window Managers"                       "Install Hyprland, Sway, i3, or bspwm" \
         "Reboot System"                         "Reboot the system" \
         "Exit"                                  "Exit the script" 3>&1 1>&2 2>&3
+}
+
+function window_manager_menu() {
+    whiptail --backtitle "GitHub.com/PiercingXX" --title "Window Managers" \
+        --menu "Select a window manager to install:" 0 0 0 \
+        "Hyprland"                             "Install Hyprland & all dependencies" \
+        "Sway"                                 "Install Sway & all dependencies" \
+        "i3"                                   "Install i3 & all dependencies" \
+        "bspwm"                                "Install bspwm & all dependencies" \
+        "Back"                                 "Return to the main menu" 3>&1 1>&2 2>&3
 }
 # Main menu loop
 while true; do
@@ -148,13 +158,44 @@ while true; do
                 sudo ./Surface.sh
                 cd "$builddir" || exit
             ;;
-        "Hyprland"*)
-            echo -e "${YELLOW}Installing Hyprland & Dependencies...${NC}"
-                cd scripts || exit
-                chmod u+x hyprland-install.sh
-                ./hyprland-install.sh
-                cd "$builddir" || exit
-            echo -e "${GREEN}Installed successfully!${NC}"
+        "Window Managers")
+            wm_choice=$(window_manager_menu)
+            case $wm_choice in
+                "Hyprland")
+                    echo -e "${YELLOW}Installing Hyprland & Dependencies...${NC}"
+                    cd scripts || exit
+                    chmod u+x hyprland-install.sh
+                    ./hyprland-install.sh
+                    cd "$builddir" || exit
+                    echo -e "${GREEN}Hyprland installed successfully!${NC}"
+                    ;;
+                "Sway")
+                    echo -e "${YELLOW}Installing Sway & Dependencies...${NC}"
+                    cd scripts || exit
+                    chmod u+x sway-install.sh
+                    ./sway-install.sh
+                    cd "$builddir" || exit
+                    echo -e "${GREEN}Sway installed successfully!${NC}"
+                    ;;
+                "i3")
+                    echo -e "${YELLOW}Installing i3 & Dependencies...${NC}"
+                    cd scripts || exit
+                    chmod u+x i3-install.sh
+                    ./i3-install.sh
+                    cd "$builddir" || exit
+                    echo -e "${GREEN}i3 installed successfully!${NC}"
+                    ;;
+                "bspwm")
+                    echo -e "${YELLOW}Installing bspwm & Dependencies...${NC}"
+                    cd scripts || exit
+                    chmod u+x bspwm-install.sh
+                    ./bspwm-install.sh
+                    cd "$builddir" || exit
+                    echo -e "${GREEN}bspwm installed successfully!${NC}"
+                    ;;
+                "Back")
+                    ;;
+            esac
             ;;
         "Reboot System")
             echo -e "${YELLOW}Rebooting system in 3 seconds...${NC}"

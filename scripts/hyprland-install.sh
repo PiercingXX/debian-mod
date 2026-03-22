@@ -1,6 +1,8 @@
 #!/bin/bash
 # https://github.com/piercingxx
 
+set -e
+
 username=$(id -u -n 1000)
 builddir=$(pwd)
 
@@ -38,15 +40,19 @@ hyprland_version="v0.43.0"
     sudo apt install rofi -y
     sudo apt install fuzzel -y
     sudo apt install waybar -y
+    sudo apt install xwayland -y
+    sudo apt install qtwayland5 -y
     sudo apt install wayland-protocols -y
     sudo apt install wl-clipboard -y
     sudo apt install wlogout -y
     sudo apt install pavucontrol -y
     sudo apt install grim -y
     sudo apt install slurp -y
-    sudo apt install cliphist -y
+    sudo apt install golang-go -y
+    sudo apt install jq -y
+    sudo apt install libnotify-bin -y
     sudo apt install easyeffects -y
-    sudo apt install network-manager-applet -y
+    sudo apt install network-manager-gnome -y
     sudo apt install bluez -y
     sudo apt install blueman -y
     sudo apt install polkit-kde-agent-1 -y
@@ -72,6 +78,8 @@ hyprland_version="v0.43.0"
     sudo apt install libxcb-composite0-dev -y
     sudo apt install libxcb-res0-dev -y
     sudo apt install libxcb-errors-dev -y
+
+    bash "$(dirname "$0")/wm-compat.sh"
 
 # Build hyprutils from source (required by Hyprland)
     printf "${NOTE} Building and installing hyprutils v0.11.0...\n"
