@@ -65,12 +65,55 @@ function menu() {
 
 function window_manager_menu() {
     whiptail --backtitle "GitHub.com/PiercingXX" --title "Window Managers" \
-        --menu "Select a window manager to install:" 0 0 0 \
-        "Hyprland"                             "Install Hyprland & all dependencies" \
-        "Sway"                                 "Install Sway & all dependencies" \
-        "i3"                                   "Install i3 & all dependencies" \
-        "bspwm"                                "Install bspwm & all dependencies" \
-        "Back"                                 "Return to the main menu" 3>&1 1>&2 2>&3
+        --checklist "Select one or more window managers to install:" 0 0 0 \
+        "Hyprland"                             "Install Hyprland & all dependencies" OFF \
+        "Sway"                                 "Install Sway & all dependencies" OFF \
+        "i3"                                   "Install i3 & all dependencies" OFF \
+        "bspwm"                                "Install bspwm & all dependencies" OFF 3>&1 1>&2 2>&3
+}
+
+run_wm_install_script() {
+    local label="$1"
+    local script_name="$2"
+
+    echo -e "${YELLOW}Installing ${label} & Dependencies...${NC}"
+    cd scripts || exit
+    chmod u+x "$script_name"
+    ./$script_name
+    cd "$builddir" || exit
+    echo -e "${GREEN}${label} installed successfully!${NC}"
+}
+
+install_selected_window_managers() {
+    local wm_choices
+    local wm_choice
+
+    wm_choices=$(window_manager_menu) || wm_choices=""
+    [ -n "$wm_choices" ] || return 0
+
+    for wm_choice in $wm_choices; do
+        wm_choice=${wm_choice//\"/}
+        case $wm_choice in
+            "Hyprland")
+                run_wm_install_script "Hyprland" "hyprland-install.sh"
+                ;;
+            "Sway")
+                run_wm_install_script "Sway" "sway-install.sh"
+                ;;
+            "i3")
+                run_wm_install_script "i3" "i3-install.sh"
+                ;;
+            "bspwm")
+                run_wm_install_script "bspwm" "bspwm-install.sh"
+                ;;
+        esac
+    done
+}
+
+prompt_install_window_managers_after_install() {
+    if whiptail --backtitle "GitHub.com/PiercingXX" --title "Window Managers" --yesno "Install window managers before reboot?" 0 0; then
+        install_selected_window_managers
+    fi
 }
 # Main menu loop
 while true; do
@@ -136,6 +179,7 @@ while true; do
             echo -e "${GREEN}PiercingXX Gnome Customizations Applied successfully!${NC}"
             sudo systemctl enable gdm3 --now
             wait
+            prompt_install_window_managers_after_install
             msg_box "System will reboot now."
             sudo reboot
             ;;
@@ -159,43 +203,7 @@ while true; do
                 cd "$builddir" || exit
             ;;
         "Window Managers")
-            wm_choice=$(window_manager_menu)
-            case $wm_choice in
-                "Hyprland")
-                    echo -e "${YELLOW}Installing Hyprland & Dependencies...${NC}"
-                    cd scripts || exit
-                    chmod u+x hyprland-install.sh
-                    ./hyprland-install.sh
-                    cd "$builddir" || exit
-                    echo -e "${GREEN}Hyprland installed successfully!${NC}"
-                    ;;
-                "Sway")
-                    echo -e "${YELLOW}Installing Sway & Dependencies...${NC}"
-                    cd scripts || exit
-                    chmod u+x sway-install.sh
-                    ./sway-install.sh
-                    cd "$builddir" || exit
-                    echo -e "${GREEN}Sway installed successfully!${NC}"
-                    ;;
-                "i3")
-                    echo -e "${YELLOW}Installing i3 & Dependencies...${NC}"
-                    cd scripts || exit
-                    chmod u+x i3-install.sh
-                    ./i3-install.sh
-                    cd "$builddir" || exit
-                    echo -e "${GREEN}i3 installed successfully!${NC}"
-                    ;;
-                "bspwm")
-                    echo -e "${YELLOW}Installing bspwm & Dependencies...${NC}"
-                    cd scripts || exit
-                    chmod u+x bspwm-install.sh
-                    ./bspwm-install.sh
-                    cd "$builddir" || exit
-                    echo -e "${GREEN}bspwm installed successfully!${NC}"
-                    ;;
-                "Back")
-                    ;;
-            esac
+            install_selected_window_managers
             ;;
         "Reboot System")
             echo -e "${YELLOW}Rebooting system in 3 seconds...${NC}"
