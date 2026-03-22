@@ -65,11 +65,11 @@ function menu() {
 
 function window_manager_menu() {
     whiptail --backtitle "GitHub.com/PiercingXX" --title "Window Managers" \
-        --checklist "Select one or more window managers to install:" 0 0 0 \
-        "Hyprland"                             "Install Hyprland & all dependencies" OFF \
-        "Sway"                                 "Install Sway & all dependencies" OFF \
-        "i3"                                   "Install i3 & all dependencies" OFF \
-        "bspwm"                                "Install bspwm & all dependencies" OFF 3>&1 1>&2 2>&3
+        --menu "Select window manager to install:" 0 0 0 \
+        "Hyprland"                             "Install Hyprland & all dependencies" \
+        "Sway"                                 "Install Sway & all dependencies" \
+        "i3"                                   "Install i3 & all dependencies" \
+        "bspwm"                                "Install bspwm & all dependencies" 3>&1 1>&2 2>&3
 }
 
 run_wm_install_script() {
@@ -85,29 +85,25 @@ run_wm_install_script() {
 }
 
 install_selected_window_managers() {
-    local wm_choices
     local wm_choice
 
-    wm_choices=$(window_manager_menu) || wm_choices=""
-    [ -n "$wm_choices" ] || return 0
+    wm_choice=$(window_manager_menu) || return 0
+    [ -n "$wm_choice" ] || return 0
 
-    for wm_choice in $wm_choices; do
-        wm_choice=${wm_choice//\"/}
-        case $wm_choice in
-            "Hyprland")
-                run_wm_install_script "Hyprland" "hyprland-install.sh"
-                ;;
-            "Sway")
-                run_wm_install_script "Sway" "sway-install.sh"
-                ;;
-            "i3")
-                run_wm_install_script "i3" "i3-install.sh"
-                ;;
-            "bspwm")
-                run_wm_install_script "bspwm" "bspwm-install.sh"
-                ;;
-        esac
-    done
+    case $wm_choice in
+        "Hyprland")
+            run_wm_install_script "Hyprland" "hyprland-install.sh"
+            ;;
+        "Sway")
+            run_wm_install_script "Sway" "sway-install.sh"
+            ;;
+        "i3")
+            run_wm_install_script "i3" "i3-install.sh"
+            ;;
+        "bspwm")
+            run_wm_install_script "bspwm" "bspwm-install.sh"
+            ;;
+    esac
 }
 
 prompt_install_window_managers_after_install() {
