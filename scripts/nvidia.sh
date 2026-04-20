@@ -2,7 +2,7 @@
 # Install Nvidia drivers and CUDA on Debian 13
 # https://github.com/piercingxx
 
-set -euo pipefail
+set -uo pipefail
 
 # Verify we are running as root
 if [[ $EUID -ne 0 ]]; then
